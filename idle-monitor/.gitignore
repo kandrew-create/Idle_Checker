@@ -1,0 +1,11 @@
+config.json
+config.json.*
+*.bad
+*.log
+*.log.*
+*.lock
+__pycache__/
+.venv/
+build/
+dist/
+*.lnk

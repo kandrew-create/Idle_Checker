@@ -1,0 +1,11 @@
+{
+  "idle_threshold_minutes": 30,
+  "check_interval_seconds": 30,
+  "smtp_host": "smtp.gmail.com",
+  "smtp_port": 587,
+  "use_ssl": false,
+  "email": "",
+  "email_password": "",
+  "log_file": "idle_monitor.log",
+  "app_whitelist": []
+}

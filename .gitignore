@@ -1,0 +1,26 @@
+# Local credentials and environment settings
+.env
+.env.*
+!.env.example
+config.json
+config.json.*
+
+# Python environments and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Generated output and local logs
+build/
+dist/
+*.log
+*.log.*
+
+# Local editor and operating system files
+.vs/
+.idea/
+.DS_Store
+Thumbs.db
+Desktop.ini
