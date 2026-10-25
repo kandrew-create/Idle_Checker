@@ -705,7 +705,6 @@ class App:
             icon.visible = True
             self.refresh()
             if self.recovery: self.notice("Missing or corrupt config: defaults created; old config kept as .bad.")
-            self.show_monitor()
             worker.start()
             reporter.start()
         try: self.icon.run(setup=ready)

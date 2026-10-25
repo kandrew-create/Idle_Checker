@@ -3,7 +3,8 @@
 Monitors keyboard/mouse inactivity in each interactive Windows session and emails
 an application/window snapshot after the configured idle threshold. Runs in the tray.
 
-Version 1.0.2 email subjects automatically use the computer's hostname:
+Version 1.0.3 starts in the system tray without opening the dashboard at login.
+Email subjects automatically use the computer's hostname:
 `<hostname> - Idle Check Report` for automatic alerts and manual tests. For example,
 a computer named `STATION3` sends `STATION3 - Idle Check Report`. The body also
 includes the computer name, Windows username, and idle details.
@@ -95,7 +96,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\build-installer.ps1
 ```
 
 If the compiler is elsewhere, pass `-Compiler 'C:\path\to\ISCC.exe'`.
-Use `-Version '1.0.2'` to set the installer version for a subsequent release.
+Use `-Version '1.0.3'` to set the installer version for a subsequent release.
 Installer output is `dist\setup.exe`. The compiler is a build-only tool.
 Use the compiler under its applicable license for your deployment.
 
@@ -153,7 +154,8 @@ separate reporting/mail backend, which this version does not provide.
 
 ## Monitoring and reports
 
-Open the app or double-click its tray icon for Monitoring. Closing/minimizing this
+The app starts in the system tray, including at Windows login. Double-click its
+tray icon or choose **Live monitoring...** to open Monitoring. Closing/minimizing this
 window leaves monitoring in the tray. The dashboard shows idle time, threshold,
 status, latest email time/error, and visible application windows (including minimized
 ones). Background services, hidden windows, and inactive browser/editor tabs are

@@ -12,6 +12,7 @@ u.EnumWindows.argtypes = [callback, W.LPARAM]
 u.GetWindowThreadProcessId.argtypes = [W.HWND, C.POINTER(W.DWORD)]
 u.GetClassNameW.argtypes = [W.HWND, W.LPWSTR, C.c_int]
 u.GetWindowTextW.argtypes = [W.HWND, W.LPWSTR, C.c_int]
+u.IsWindowVisible.argtypes = [W.HWND]
 u.PostMessageW.argtypes = [W.HWND, W.UINT, W.WPARAM, W.LPARAM]
 with tempfile.TemporaryDirectory(prefix='idle-packaged-') as folder:
     env = dict(os.environ, APPDATA=folder)
@@ -37,7 +38,7 @@ with tempfile.TemporaryDirectory(prefix='idle-packaged-') as folder:
                         u.GetWindowTextW(hwnd, title, 256)
                         if cls.value.startswith('idle-monitor') and cls.value.endswith('SystemTrayIcon'):
                             tray.append(hwnd)
-                        if title.value == 'Idle Monitor - Monitoring & Settings': settings.append(hwnd)
+                        if cls.value == 'TkTopLevel' and u.IsWindowVisible(hwnd): settings.append(hwnd)
                     return True
                 child_pids = {process.pid, orphan_pid}
                 listing = subprocess.check_output(['powershell', '-NoProfile', '-Command', "Get-CimInstance Win32_Process -Filter \"Name = 'Idle Monitor.exe'\" | Select-Object ProcessId,ParentProcessId | ConvertTo-Json -Compress"], text=True)
@@ -45,14 +46,15 @@ with tempfile.TemporaryDirectory(prefix='idle-packaged-') as folder:
                 if isinstance(entries, dict): entries = [entries]
                 child_pids.update(item['ProcessId'] for item in entries if item['ParentProcessId'] == process.pid)
                 u.EnumWindows(visit, 0)
-                if tray and settings: break
+                assert not settings, 'Startup must not show a dashboard'
+                if tray: break
             assert process.poll() is None, 'Packaged application exited early'
             time.sleep(.1)
-        assert tray and settings, 'Tray and Settings windows must both initialize'
+        assert tray and not settings, 'Startup must initialize only the tray'
         for hwnd in tray: u.PostMessageW(hwnd, 0x40A, 0, 0)
         assert process.wait(timeout=15) == 0
         assert not lock.exists(), 'Clean shutdown must remove the lock'
-        print('PASS: GUI subsystem, idle diagnostic, tray, Tk Settings, shutdown and lock cleanup')
+        print('PASS: GUI subsystem, idle diagnostic, tray-only startup, shutdown and lock cleanup')
     finally:
         if process.poll() is None:
             process.kill()

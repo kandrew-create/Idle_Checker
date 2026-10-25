@@ -34,7 +34,7 @@ threading.excepthook = lambda args: errors.append(args.exc_value)
 with tempfile.TemporaryDirectory(prefix='idle-tray-test-') as folder:
     folder = Path(folder)
     config = dict(m.DEFAULTS, email='test@example.com', email_password='mock',
-                  check_interval_seconds=0.1)
+                  check_interval_seconds=1)
     (folder / 'config.json').write_text(json.dumps(config), encoding='utf-8')
     app = m.App(config, folder / 'config.json', folder)
 
@@ -133,7 +133,13 @@ with tempfile.TemporaryDirectory(prefix='idle-tray-test-') as folder:
         return root
 
     tk.Tk = create_root
-    timer = threading.Timer(0.3, app.show_monitor)
+    def startup():
+        active()
+        assert not roots and app.window_thread is None, 'Startup must stay in the tray without creating a dashboard'
+        assert app.icon.visible, 'Startup must show the tray icon'
+        app.show_monitor()
+
+    timer = threading.Timer(0.8, check(startup))
     watchdog = threading.Timer(12, app.quit)
     try:
         timer.start()
@@ -143,7 +149,7 @@ with tempfile.TemporaryDirectory(prefix='idle-tray-test-') as folder:
         assert not errors, errors
         assert not app.window_thread.is_alive(), 'Quit must close hidden Settings'
         assert not watchdog.finished.is_set(), 'Test timed out'
-        print('PASS: employee dashboard, hidden settings/whitelist tabs, disabled whitelist action, pause/resume, minimize, X, tray restore, continued monitoring and Quit')
+        print('PASS: tray-only startup, employee dashboard, hidden settings/whitelist tabs, disabled whitelist action, pause/resume, minimize, X, tray restore, continued monitoring and Quit')
     finally:
         watchdog.cancel()
         timer.cancel()
