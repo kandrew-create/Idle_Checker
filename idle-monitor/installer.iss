@@ -1,6 +1,6 @@
 ; Build with build-installer.ps1. Packages the existing application executable.
 #ifndef AppVersion
-  #define AppVersion "1.0.1"
+  #define AppVersion "1.0.2"
 #endif
 
 [Setup]

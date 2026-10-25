@@ -3,7 +3,7 @@
 Monitors keyboard/mouse inactivity in each interactive Windows session and emails
 an application/window snapshot after the configured idle threshold. Runs in the tray.
 
-Email subjects automatically use the computer's hostname:
+Version 1.0.2 email subjects automatically use the computer's hostname:
 `<hostname> - Idle Check Report` for automatic alerts and manual tests. For example,
 a computer named `STATION3` sends `STATION3 - Idle Check Report`. The body also
 includes the computer name, Windows username, and idle details.

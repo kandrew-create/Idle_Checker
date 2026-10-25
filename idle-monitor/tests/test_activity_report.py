@@ -100,12 +100,14 @@ class EmailTests(unittest.TestCase):
     def test_email_contains_body_and_attachment_for_same_account(self):
         smtp = Mock()
         with patch.object(monitor.smtplib, 'SMTP', return_value=smtp), \
+             patch.object(monitor.socket, 'gethostname', return_value='STATION3'), \
              patch.object(monitor, 'collect_report', return_value=self.report):
             result = monitor.smtp_action(self.config, 90)
         msg = smtp.send_message.call_args.args[0]
         self.assertEqual(msg['To'], self.config['email'])
         self.assertEqual(msg['From'], self.config['email'])
-        self.assertEqual(msg['Subject'], 'Station 2 - Idle Check Report')
+        self.assertEqual(msg['Subject'], 'STATION3 - Idle Check Report')
+        self.assertIn('Hostname: STATION3', msg.get_body(preferencelist=('plain',)).get_content())
         self.assertIn('example.exe', msg.get_body(preferencelist=('plain',)).get_content())
         attachment = list(msg.iter_attachments())[0]
         self.assertEqual(attachment.get_filename(), 'idle-application-report.txt')
