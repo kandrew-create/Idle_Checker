@@ -165,7 +165,7 @@ def smtp_action(config, idle=None):
             now, host = datetime.now().astimezone(), socket.gethostname()
             msg = EmailMessage()
             msg["From"] = msg["To"] = c["email"]
-            msg["Subject"] = "Station 2 - Idle Check Report"
+            msg["Subject"] = f"{host} - Idle Check Report"
             report = collect_report(c['app_whitelist'])
             report_text = format_report(report)
             msg.set_content(f"Hostname: {host}\nUsername: {getpass.getuser()}\nIdle: {idle / 60:.1f} minutes\n"
